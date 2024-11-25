@@ -1,1 +1,2 @@
-# SCDAAN6
+# SCDAAN group 6
+
