@@ -40,22 +40,51 @@ def histogram_comparison(dataset, column_id: int, title="histogram", use_bins=Fa
     plt.show()
 
 
-def scatter_plot_comparison(dataset, x_column=0, y_column=1, title="scatter plot", xlabel="x", ylabel="y") -> None:
+def scatter_plot_comparison(dataset, x_column=0, y_column=1, title="scatter plot", x_label="x", y_label="y") -> None:
     """
         This function makes a scatter plot of two columns of the dataset.
 
         Keyword arguments:  
         |dataset    -- a dataset as a regular 2d numpy array
-        |x_column   -- an integer number for the x column starting at 0
-        |y_column   -- an integer number for the y column starting at 0
+        |x_column   -- an integer number for the x column starting at 0         (default 0)
+        |y_column   -- an integer number for the y column starting at 0         (default 1)
         |title      -- the title of the plot                                    (default "histogram")
+        |x_label    -- the label for the x-axis                                 (default "x")
+        |y_label    -- the label for the y-axis                                 (default "y")
     """
     x_data = [entry[x_column] for entry in dataset]
     y_data = [entry[y_column] for entry in dataset]
     plt.title(title)
+    plt.xlabel(x_label)
+    plt.ylabel(y_label)
+    plt.scatter(x_data,y_data)
+    plt.show()
+
+
+def coloured_scatter_plot_comparison(dataset, x_column=0, y_column=1, colour_column=2, title="scatter plot", xlabel="x", ylabel="y", colour_label="") -> None:
+    """
+        This function makes a scatter plot of two columns of the dataset.
+
+        Keyword arguments:  
+        |dataset        -- a dataset as a regular 2d numpy array
+        |x_column       -- an integer number for the x column starting at 0         (default 0)
+        |y_column       -- an integer number for the y column starting at 0         (default 1)
+        |colour_column  -- an integer number for the colour column starting at 0    (default 2)
+        |title          -- the title of the plot                                    (default "histogram")
+        |x_label        -- the label for the x-axis                                 (default "x")
+        |y_label        -- the label for the y-axis                                 (default "y")
+        |colour_label   -- the label for the colours                                (default "")
+    """
+    colour_data = [entry[colour_column] for entry in dataset]
+    colour_data_set = list(set(colour_data))
+    data = [(entry[x_column], entry[y_column], entry[colour_column]) for entry in dataset]
+    plt.title(title)
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
-    plt.scatter(x_data,y_data)
+    for colour in colour_data_set:
+        sub_data = np.array([entry[:-1] for entry in data if entry[2] == colour])
+        plt.scatter(sub_data.T[0], sub_data.T[1], label=colour + " " + colour_label)
+        plt.legend()
     plt.show()
 
 
@@ -63,11 +92,20 @@ def main():
     headers, dataset = read_csv("data/Marine_Fish_Data.csv")
     # histogram_comparison(dataset, 0, title=headers[0])
     # histogram_comparison(dataset, 5, title=headers[5], use_bins=True)
+    
+    # x_column = 5
+    # y_column = 4
+    # scatter_plot_comparison(dataset, x_column, y_column,
+    #                         title="fish population for average size of the fish",
+    #                         xlabel=headers[x_column], ylabel=headers[y_column])
+
     x_column = 5
     y_column = 4
-    scatter_plot_comparison(dataset, x_column, y_column,
-                            title="fish population for average size of the fish",
-                            xlabel=headers[x_column], ylabel=headers[y_column])
+    colour_column = 8
+    coloured_scatter_plot_comparison(dataset, x_column, y_column, colour_column,
+                                     title="fish population for average size of the fish",
+                                     xlabel=headers[x_column], ylabel=headers[y_column],
+                                     colour_label=headers[colour_column])
 
 
 if __name__ == "__main__":
