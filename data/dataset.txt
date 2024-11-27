@@ -1,12 +1,26 @@
 Marine_Fish_Data.csv: https://www.kaggle.com/datasets/arifmia/marine-fish-dataset
-Species_Name,Region,Breeding_Season,Fishing_Method,Fish_Population,Average_Size(cm),Overfishing_Risk,Water_Temperature(C),Water_Pollution_Level
-str, str, str, str, int, float, str, int, str
+    Species_Name,   Region, Breeding_Season,    Fishing_Method, Fish_Population,    Average_Size(cm),   Overfishing_Risk,   Water_Temperature(C),   Water_Pollution_Level
+    str,            str,    str,                str,            int,                float,              str,                int,                    str
 
-combined dataset fishAndOverfishing: https://www.kaggle.com/datasets/sergegeukjian/fish-and-overfishing?select=capture-fishery-production.csv
+combined dataset fish and overfishing: https://www.kaggle.com/datasets/sergegeukjian/fish-and-overfishing?select=capture-fishery-production.csv
 fishAndOverfishing/aquaculture-farmed-fish-production.csv
+    Entity, Code,   Year,   Aquaculture production (metric tons)
+    str,    str,    int,    float
 fishAndOverfishing/capture-fisheries-vs-aquaculture.csv
+    Entity, Code,   Year,   Aquaculture production (metric tons),   Capture fisheries production (metric tons)
+    str,    str.    int,    float,                                  float
 fishAndOverfishing/capture-fishery-production.csv
+    Entity, Code,   Year,   Capture fisheries production (metric tons)
+    str,    str,    int,    float
 fishAndOverfishing/fish-and-seafood-consumption-per-capita.csv
+    Entity, Code,   Year,   "Fish, Seafood- Food supply quantity (kg/capita/yr) (FAO, 2020)"
+    str,    str,    int,    float
 fishAndOverfishing/fish-stocks-within-sustainable-levels.csv
+    Entity, Code,   Year,   "Share of fish stocks within biologically sustainable levels (FAO, 2020)",  Share of fish stocks that are overexploited
+    str,    str,    int,    float,                                                                      float
 fishAndOverfishing/global-fishery-catch-by-sector.csv
+    Entity, Code,   Year,   Artisanal (small-scale commercial), Discards,   Industrial (large-scale commercial),    Recreational,   Subsistence
+    str,    str,    int,    float,                              float,      float,                                  float,          float
 fishAndOverfishing/seafood-and-fish-production-thousand-tonnes.csv
+    Entity, Code,   Year,   Commodity Balances - Livestock and Fish Primary Equivalent - tonnes,    Commodity Balances - Livestock and Fish Primary Equivalent - Crustaceans - 2765 - Production - 5510 - tonnes,   Commodity Balances - Livestock and Fish Primary Equivalent - Cephalopods - 2766 - Production - 5510 - tonnes,   Commodity Balances - Livestock and Fish Primary Equivalent - Demersal Fish - 2762 - Production - 5510 - tonnes, Commodity Balances - Livestock and Fish Primary Equivalent - Freshwater Fish - 2761 - Production - 5510 - tonnes,   "Commodity Balances - Livestock and Fish Primary Equivalent - Molluscs, Other - 2767 - Production - 5510 - tonnes", "Commodity Balances - Livestock and Fish Primary Equivalent - Marine Fish, Other - 2764 - Production - 5510 - tonnes"
+    str,    str,    int,    float,                                                                  float,                                                                                                          float,                                                                                                          float,                                                                                                          float,                                                                                                              float,                                                                                                              float
