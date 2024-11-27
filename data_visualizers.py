@@ -97,7 +97,7 @@ def main():
     # y_column = 4
     # scatter_plot_comparison(dataset, x_column, y_column,
     #                         title="fish population for average size of the fish",
-    #                         xlabel=headers[x_column], ylabel=headers[y_column])
+    #                         x_label=headers[x_column], y_label=headers[y_column])
 
     x_column = 7 # must be a numbers column in the case of data/Marine_Fish_Data.csv this can be 4,5,7
     y_column = 5 # must be a numbers column in the case of data/Marine_Fish_Data.csv this can be 4,5,7
