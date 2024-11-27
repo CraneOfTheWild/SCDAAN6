@@ -2,22 +2,24 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
-import csv
+import pandas as pd
+from collections import Counter
 
 
-def read_csv(filename: str) -> list[list]:
+def read_csv(filename: str, header_length=1) -> list[list]:
     """
     Read in a csv file into an array.
-    https://www.geeksforgeeks.org/reading-csv-files-in-python/
 
     Keyword arguments:  
     |filename   -- the name of the csv file including the .csv
     """
-    my_data = np.genfromtxt(filename, delimiter=',')
-    return my_data
+    pd_dataset = pd.read_csv(filename)
+    headers = pd_dataset.columns.to_list()
+    dataset = pd_dataset.to_numpy()
+    return headers, dataset
 
 
-def histogram_comparison(dataset,column_id: int, title="histogram", use_bins=False, nr_bins=3):
+def histogram_comparison(dataset,column_id: int, title="histogram", use_bins=False):
     """
         This function makes a histogram plot of one column of the dataset.
 
@@ -25,18 +27,23 @@ def histogram_comparison(dataset,column_id: int, title="histogram", use_bins=Fal
         |dataset    -- a dataset as a regular array of values
         |column_id  -- an integer number for the column starting at 0
         |title      -- the title of the plot                                    (default "histogram")
-        |use_bins   -- a boolean to signify if bin agregation should be used    (default False)
-        |nr_bins    -- an integer for the ammount of bins to be used            (default 3)
+        |use_bins   -- a boolean to signify if bin aggregation can be used      (default False)
     """
-    data = np.array(dataset).T[column_id]
-    plt.title(title)
-    plt.hist(data)
+    data = [entry[column_id] for entry in dataset]
+    if use_bins:
+        plt.title(title)
+        plt.hist(data)
+    else: # taken from https://stackoverflow.com/questions/28418988/how-to-make-a-histogram-from-a-list-of-strings
+        counts = Counter(data)
+        df = pd.DataFrame.from_dict(counts, orient='index')
+        df.plot(kind='bar', title=title)
     plt.show()
 
 
 def main():
-    dataset = read_csv("data/Marine_Fish_Data.csv")
-    histogram_comparison(dataset, 5, "average size")
+    headers, dataset = read_csv("data/Marine_Fish_Data.csv", 1)
+    histogram_comparison(dataset, 0, title=headers[0])
+    histogram_comparison(dataset, 5, title=headers[5], use_bins=True)
 
 
 if __name__ == "__main__":
