@@ -61,7 +61,7 @@ def scatter_plot_comparison(dataset, x_column=0, y_column=1, title="scatter plot
     plt.show()
 
 
-def coloured_scatter_plot_comparison(dataset, x_column=0, y_column=1, colour_column=2, title="scatter plot", xlabel="x", ylabel="y", colour_label="") -> None:
+def coloured_scatter_plot_comparison(dataset, x_column=0, y_column=1, colour_column=2, title="scatter plot", xlabel="x", ylabel="y", colour_label="", show_legend=True) -> None:
     """
         This function makes a scatter plot of two columns of the dataset.
 
@@ -74,6 +74,7 @@ def coloured_scatter_plot_comparison(dataset, x_column=0, y_column=1, colour_col
         |x_label        -- the label for the x-axis                                 (default "x")
         |y_label        -- the label for the y-axis                                 (default "y")
         |colour_label   -- the label for the colours                                (default "")
+        |show_legend    -- a boolean for if the legend is shown                     (default True)
     """
     colour_data = [entry[colour_column] for entry in dataset]
     colour_data_set = list(set(colour_data))
@@ -84,7 +85,8 @@ def coloured_scatter_plot_comparison(dataset, x_column=0, y_column=1, colour_col
     for colour in colour_data_set:
         sub_data = np.array([entry[:-1] for entry in data if entry[2] == colour])
         plt.scatter(sub_data.T[0], sub_data.T[1], label=colour + " " + colour_label, alpha=0.3)
-        plt.legend()
+        if show_legend:
+            plt.legend()
     plt.show()
 
 
