@@ -1,1 +1,4 @@
 Marine_Fish_Data.csv: https://www.kaggle.com/datasets/arifmia/marine-fish-dataset
+Species_Name,Region,Breeding_Season,Fishing_Method,Fish_Population,Average_Size(cm),Overfishing_Risk,Water_Temperature(C),Water_Pollution_Level
+str, str, str, str, int, float, str, int, str
+
