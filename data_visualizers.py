@@ -6,7 +6,7 @@ import pandas as pd
 from collections import Counter
 
 
-def read_csv(filename: str, header_length=1) -> list[list]:
+def read_csv(filename: str, header_length=1) -> tuple[list, list[list]]:
     """
     Read in a csv file into an array.
 
