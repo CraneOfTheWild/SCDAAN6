@@ -19,12 +19,12 @@ def read_csv(filename: str) -> tuple[list, list[list]]:
     return headers, dataset
 
 
-def histogram_comparison(dataset,column_id: int, title="histogram", use_bins=False):
+def histogram_comparison(dataset, column_id: int, title="histogram", use_bins=False) -> None:
     """
         This function makes a histogram plot of one column of the dataset.
 
         Keyword arguments:  
-        |dataset    -- a dataset as a regular array of values
+        |dataset    -- a dataset as a regular 2d numpy array
         |column_id  -- an integer number for the column starting at 0
         |title      -- the title of the plot                                    (default "histogram")
         |use_bins   -- a boolean to signify if bin aggregation can be used      (default False)
@@ -40,10 +40,34 @@ def histogram_comparison(dataset,column_id: int, title="histogram", use_bins=Fal
     plt.show()
 
 
+def scatter_plot_comparison(dataset, x_column=0, y_column=1, title="scatter plot", xlabel="x", ylabel="y") -> None:
+    """
+        This function makes a scatter plot of two columns of the dataset.
+
+        Keyword arguments:  
+        |dataset    -- a dataset as a regular 2d numpy array
+        |x_column   -- an integer number for the x column starting at 0
+        |y_column   -- an integer number for the y column starting at 0
+        |title      -- the title of the plot                                    (default "histogram")
+    """
+    x_data = [entry[x_column] for entry in dataset]
+    y_data = [entry[y_column] for entry in dataset]
+    plt.title(title)
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.scatter(x_data,y_data)
+    plt.show()
+
+
 def main():
     headers, dataset = read_csv("data/Marine_Fish_Data.csv")
-    histogram_comparison(dataset, 0, title=headers[0])
-    histogram_comparison(dataset, 5, title=headers[5], use_bins=True)
+    # histogram_comparison(dataset, 0, title=headers[0])
+    # histogram_comparison(dataset, 5, title=headers[5], use_bins=True)
+    x_column = 5
+    y_column = 4
+    scatter_plot_comparison(dataset, x_column, y_column,
+                            title="fish population for average size of the fish",
+                            xlabel=headers[x_column], ylabel=headers[y_column])
 
 
 if __name__ == "__main__":
