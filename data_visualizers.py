@@ -6,7 +6,7 @@ import pandas as pd
 from collections import Counter
 
 
-def read_csv(filename: str, header_length=1) -> tuple[list, list[list]]:
+def read_csv(filename: str) -> tuple[list, list[list]]:
     """
     Read in a csv file into an array.
 
@@ -41,7 +41,7 @@ def histogram_comparison(dataset,column_id: int, title="histogram", use_bins=Fal
 
 
 def main():
-    headers, dataset = read_csv("data/Marine_Fish_Data.csv", 1)
+    headers, dataset = read_csv("data/Marine_Fish_Data.csv")
     histogram_comparison(dataset, 0, title=headers[0])
     histogram_comparison(dataset, 5, title=headers[5], use_bins=True)
 
