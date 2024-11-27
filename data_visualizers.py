@@ -4,6 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 from collections import Counter
+from matplotlib.ticker import MaxNLocator
 
 
 def read_csv(filename: str) -> tuple[list, list[list]]:
@@ -58,6 +59,8 @@ def scatter_plot_comparison(dataset, x_column=0, y_column=1, title="scatter plot
     plt.xlabel(x_label)
     plt.ylabel(y_label)
     plt.scatter(x_data,y_data, alpha=0.3)
+    plt.gca().xaxis.set_major_locator(MaxNLocator(integer=True, prune='lower', nbins=6))
+    plt.gca().yaxis.set_major_locator(MaxNLocator(integer=True, prune='both', nbins=6))
     plt.show()
 
 
@@ -85,6 +88,8 @@ def coloured_scatter_plot_comparison(dataset, x_column=0, y_column=1, colour_col
     for colour in colour_data_set:
         sub_data = np.array([entry[:-1] for entry in data if entry[2] == colour])
         plt.scatter(sub_data.T[0], sub_data.T[1], label=colour + " " + colour_label, alpha=0.3)
+        plt.gca().xaxis.set_major_locator(MaxNLocator(integer=True, prune='lower', nbins=6))
+        plt.gca().yaxis.set_major_locator(MaxNLocator(integer=True, prune='both', nbins=6))
         if show_legend:
             plt.legend()
     plt.show()
