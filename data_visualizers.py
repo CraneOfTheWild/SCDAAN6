@@ -57,7 +57,7 @@ def scatter_plot_comparison(dataset, x_column=0, y_column=1, title="scatter plot
     plt.title(title)
     plt.xlabel(x_label)
     plt.ylabel(y_label)
-    plt.scatter(x_data,y_data)
+    plt.scatter(x_data,y_data, alpha=0.3)
     plt.show()
 
 
@@ -83,7 +83,7 @@ def coloured_scatter_plot_comparison(dataset, x_column=0, y_column=1, colour_col
     plt.ylabel(ylabel)
     for colour in colour_data_set:
         sub_data = np.array([entry[:-1] for entry in data if entry[2] == colour])
-        plt.scatter(sub_data.T[0], sub_data.T[1], label=colour + " " + colour_label)
+        plt.scatter(sub_data.T[0], sub_data.T[1], label=colour + " " + colour_label, alpha=0.3)
         plt.legend()
     plt.show()
 
@@ -99,11 +99,10 @@ def main():
     #                         title="fish population for average size of the fish",
     #                         xlabel=headers[x_column], ylabel=headers[y_column])
 
-    x_column = 5
-    y_column = 4
-    colour_column = 8
+    x_column = 7 # must be a numbers column in the case of data/Marine_Fish_Data.csv this can be 4,5,7
+    y_column = 5 # must be a numbers column in the case of data/Marine_Fish_Data.csv this can be 4,5,7
+    colour_column = 0 # must be a discrete values column in the case of data/Marine_Fish_Data.csv this can be 0,1,2,3,6,8
     coloured_scatter_plot_comparison(dataset, x_column, y_column, colour_column,
-                                     title="fish population for average size of the fish",
                                      xlabel=headers[x_column], ylabel=headers[y_column],
                                      colour_label=headers[colour_column])
 
