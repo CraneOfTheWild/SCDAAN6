@@ -54,3 +54,6 @@ https://www.kaggle.com/datasets/iamsouravbanerjee/customer-shopping-trends-datas
 
 file.csv:
 https://www.kaggle.com/datasets/jacksondivakarr/online-shopping-dataset
+
+E-commerce Customer Data For Behavior Analysis：
+https://www.kaggle.com/datasets/shriyashjagtap/e-commerce-customer-for-behavior-analysis
