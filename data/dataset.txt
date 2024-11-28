@@ -1,7 +1,26 @@
 Here we explain where our data came from and how it is structured
 
 EXAMPLE:
-name: link
+filename: link
+indexes
 fields
 fields_type
+example_row
 
+data/file.csv: ?
+0,      1,          2,      3,          4,              5,              6,                  7,              8,                      9,                  10,         11,         12,                 13,             14,         15,             16,             17,     18,             19
+rownr,  CustomerID, Gender, Location,   Tenure_Months,  Transaction_ID, Transaction_Date,   Product_SKU,    Product_Description,    Product_Category,   Quantity,   Avg_Price,  Delivery_Charges,   Coupon_Status,  GST,Date,   Offline_Spend,  Online_Spend,   Month,  Coupon_Code,    Discount_pct
+int,    float,      char,   str,        float,          float           str(date),          str,            str,                    str,                float,      float,      float,              str,            str(date),  float,          float,          int,    str,            float
+0,      17850.0,    M,      Chicago,    12.0,           16679.0,        2019-01-01,         GGOENEBJ079499, Nest Learning The__,    Nest-USA,           1.0,        153.71,     6.5,                Used,           ,           4500.0,         2424.5,         1,      ELEC10,         10.0
+
+data/shopping_trends_updated.csv: ?
+0,              1,          2,      3,              4,          5,                      6,          7,      8,      9,      10,             11,                     12,             13,                 14,                 15,                 16,             17  
+Customer ID,    Age,        Gender, Item Purchased, Category,   Purchase Amount (USD),  Location,   Size,   Color,  Season, Review Rating,  Subscription Status,    Shipping Type,  Discount Applied,   Promo Code Used,    Previous Purchases, Payment Method, Frequency of Purchases
+int,            int,        str,    str,            str,        int,                    str,        char,   str,    str,    float,          str(boolean),           str,            str(boolean),       str(boolean),       int,                str,            str
+1,              55,         Male,   Blouse,         Clothing,   53,                     Kentucky,   L,      Gray,   Winter, 3.1,            Yes,                    Express,        Yes,                Yes,                14,                 Venmo,          Fortnightly
+
+data/shopping_trends.csv: ?
+0,              1,      2,      3,              4,          5,                      6,          7,      8,      9,      10,             11,                     12,             13,             14,                 15,                 16,                 17,                         18
+Customer ID,    Age,    Gender, Item Purchased, Category,   Purchase Amount (USD),  Location,   Size,   Color,  Season, Review Rating,  Subscription Status,    Payment Method, Shipping Type,  Discount Applied,   Promo Code Used,    Previous Purchases, Preferred Payment Method,   Frequency of Purchases
+int,            int,    str,    str,            str,        int,                    str,        str,    str,    str,    float,          str(boolean),           str,            str,            str(boolean),       str(boolean),       int,                str,                        str
+1,              55,     Male,   Blouse,         Clothing,   53,                     Kentucky,   L,      Gray,   Winter, 3.1,            Yes,                    Credit Card,    Express,        Yes,                Yes,                14,                 Venmo,                      Fortnightly
