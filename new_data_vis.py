@@ -91,7 +91,7 @@ def moneyspend_vs_state(dataset, column_id: list[int]):
 
 
 def main():
-    headers, dataset = read_csv("data_new/shopping_trends.csv")
+    headers, dataset = read_csv("data/shopping_trends.csv")
     age_vs_paymethod(dataset, [1, 12])
     moneyspend_vs_state(dataset, [5,6])
 

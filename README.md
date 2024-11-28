@@ -14,3 +14,12 @@ For each correlated factor pair:
 R3 Can we classify fish species into low, medium and high sensitivity groups?
 
 R? More questions will follow from the specifics of our dataset (such as location data) and further understanding of existing models.
+
+shopping_trends.csv:
+https://www.kaggle.com/datasets/bhadramohit/customer-shopping-latest-trends-dataset
+
+shopping_trends_updated.csv:
+https://www.kaggle.com/datasets/iamsouravbanerjee/customer-shopping-trends-dataset
+
+file.csv:
+https://www.kaggle.com/datasets/jacksondivakarr/online-shopping-dataset
