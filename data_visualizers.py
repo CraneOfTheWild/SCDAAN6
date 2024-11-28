@@ -7,17 +7,38 @@ from collections import Counter
 from matplotlib.ticker import MaxNLocator
 
 
-def read_csv(filename: str) -> tuple[list, list[list]]:
+def read_csv(filename: str, drop_nan=False) -> tuple[list, list[list]]:
     """
     Read in a csv file into an array.
 
     Keyword arguments:  
     |filename   -- the name of the csv file including the .csv
+    |drop_nan   -- if nan values should be dropped
     """
     pd_dataset = pd.read_csv(filename)
     headers = pd_dataset.columns.to_list()
+    pd_dataset = pd_dataset.dropna()
     dataset = pd_dataset.to_numpy()
     return headers, dataset
+
+
+def histogram_comparison_direct(data, title="histogram", use_bins=False) -> None:
+    """
+        This function makes a histogram plot of one column of the dataset.
+
+        Keyword arguments:  
+        |data       -- a data column as a numpy array
+        |title      -- the title of the plot                                    (default "histogram")
+        |use_bins   -- a boolean to signify if bin aggregation can be used      (default False)
+    """
+    if use_bins:
+        plt.title(title)
+        plt.hist(data)
+    else:  # taken from https://stackoverflow.com/questions/28418988/how-to-make-a-histogram-from-a-list-of-strings
+        counts = Counter(data)
+        df = pd.DataFrame.from_dict(counts, orient='index')
+        df.plot(kind='bar', title=title)
+    plt.show()
 
 
 def histogram_comparison(dataset, column_id: int, title="histogram", use_bins=False) -> None:
@@ -31,14 +52,7 @@ def histogram_comparison(dataset, column_id: int, title="histogram", use_bins=Fa
         |use_bins   -- a boolean to signify if bin aggregation can be used      (default False)
     """
     data = [entry[column_id] for entry in dataset]
-    if use_bins:
-        plt.title(title)
-        plt.hist(data)
-    else: # taken from https://stackoverflow.com/questions/28418988/how-to-make-a-histogram-from-a-list-of-strings
-        counts = Counter(data)
-        df = pd.DataFrame.from_dict(counts, orient='index')
-        df.plot(kind='bar', title=title)
-    plt.show()
+    histogram_comparison_direct(data, title, use_bins)
 
 
 def scatter_plot_comparison(dataset, x_column=0, y_column=1, title="scatter plot", x_label="x", y_label="y") -> None:
@@ -58,13 +72,13 @@ def scatter_plot_comparison(dataset, x_column=0, y_column=1, title="scatter plot
     plt.title(title)
     plt.xlabel(x_label)
     plt.ylabel(y_label)
-    plt.scatter(x_data,y_data, alpha=0.3)
+    plt.scatter(x_data, y_data, alpha=0.3)
     plt.gca().xaxis.set_major_locator(MaxNLocator(integer=True, prune='lower', nbins=6))
     plt.gca().yaxis.set_major_locator(MaxNLocator(integer=True, prune='both', nbins=6))
     plt.show()
 
 
-def coloured_scatter_plot_comparison(dataset, x_column=0, y_column=1, colour_column=2, title="scatter plot", xlabel="x", ylabel="y", colour_label="", show_legend=True) -> None:
+def coloured_scatter_plot_comparison(dataset, x_column=0, y_column=1, colour_column=2, title="scatter plot", x_label="x", y_label="y", colour_label="", show_legend=True) -> None:
     """
         This function makes a scatter plot of two columns of the dataset.
 
@@ -81,13 +95,16 @@ def coloured_scatter_plot_comparison(dataset, x_column=0, y_column=1, colour_col
     """
     colour_data = [entry[colour_column] for entry in dataset]
     colour_data_set = list(set(colour_data))
-    data = [(entry[x_column], entry[y_column], entry[colour_column]) for entry in dataset]
+    data = [(entry[x_column], entry[y_column], entry[colour_column])
+            for entry in dataset]
     plt.title(title)
-    plt.xlabel(xlabel)
-    plt.ylabel(ylabel)
+    plt.xlabel(x_label)
+    plt.ylabel(y_label)
     for colour in colour_data_set:
-        sub_data = np.array([entry[:-1] for entry in data if entry[2] == colour])
-        plt.scatter(sub_data.T[0], sub_data.T[1], label=colour + " " + colour_label, alpha=0.3)
+        sub_data = np.array([entry[:-1]
+                            for entry in data if entry[2] == colour])
+        plt.scatter(sub_data.T[0], sub_data.T[1],
+                    label=colour + " " + colour_label, alpha=0.3)
         plt.gca().xaxis.set_major_locator(MaxNLocator(integer=True, prune='lower', nbins=6))
         plt.gca().yaxis.set_major_locator(MaxNLocator(integer=True, prune='both', nbins=6))
         if show_legend:
@@ -96,21 +113,39 @@ def coloured_scatter_plot_comparison(dataset, x_column=0, y_column=1, colour_col
 
 
 def main():
-    headers, dataset = read_csv("data/Marine_Fish_Data.csv")
-    # histogram_comparison(dataset, 0, title=headers[0])
-    # histogram_comparison(dataset, 5, title=headers[5], use_bins=True)
-    
-    # x_column = 5
-    # y_column = 4
-    # scatter_plot_comparison(dataset, x_column, y_column,
-    #                         title="fish population for average size of the fish",
-    #                         x_label=headers[x_column], y_label=headers[y_column])
+    headers, dataset = read_csv("data/file.csv")
+    # these are the rows with numbers ie integers or floats
+    numerical_rows = [0, 1, 4, 5, 10, 11, 12, 15, 16, 17, 19]
+    # these are the rows with discrete values ie strings or integers with limit range
+    discrete_rows = [1, 2, 3, 6, 7, 9, 13, 14, 17, 18, 19]
 
-    x_column = 7 # must be a numbers column in the case of data/Marine_Fish_Data.csv this can be 4,5,7
-    y_column = 5 # must be a numbers column in the case of data/Marine_Fish_Data.csv this can be 4,5,7
-    colour_column = 0 # must be a discrete values column in the case of data/Marine_Fish_Data.csv this can be 0,1,2,3,6,8
+    # here are some examples for how to use these visualizers
+    # in your own code use:
+    #               import data_visualizers as dv
+    # after that you can call any function here as dv.function_name()
+
+    # histograms to show the distribution of that column set use_bins to true for numerical data
+    discrete_row = 2
+    histogram_comparison(dataset, discrete_row, title=headers[discrete_row])
+
+    # numerical_row = 11
+    # histogram_comparison(dataset, numerical_row,
+    #                      title=headers[numerical_row], use_bins=True)
+
+    # both these columns should hold numeric data
+    x_column = 11
+    y_column = 17
+    scatter_plot_comparison(dataset, x_column, y_column,
+                            title="scatter plot of two variables",
+                            x_label=headers[x_column], y_label=headers[y_column])
+
+    # both these columns should hold numeric data
+    x_column = 11
+    y_column = 17
+    # this column should hold discrete data
+    colour_column = 2
     coloured_scatter_plot_comparison(dataset, x_column, y_column, colour_column,
-                                     xlabel=headers[x_column], ylabel=headers[y_column],
+                                     x_label=headers[x_column], y_label=headers[y_column],
                                      colour_label=headers[colour_column])
 
 
