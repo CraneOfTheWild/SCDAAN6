@@ -104,7 +104,7 @@ def split_on_column(headers: list, dataset, discrete_column=1) -> tuple[list, li
     Keyword arguments:  
     |headers            -- a names array for each column of data
     |dataset            -- a dataset as a regular 2d numpy array
-    |discrete_column    -- an integer number for the y column starting at 0     (default 0)
+    |discrete_column    -- an integer number for the discrete column starting at 0  (default 1)
     """
     _, discrete_data = get_column(headers, dataset, discrete_column)
     discrete_data_set = np.unique(discrete_data)
@@ -113,7 +113,7 @@ def split_on_column(headers: list, dataset, discrete_column=1) -> tuple[list, li
         new_dataset = np.array([entry for entry in dataset
                                 if entry[discrete_column] == selector])
         split_datasets.append(new_dataset)
-    return headers, np.array(split_datasets)
+    return headers, split_datasets
 
 
 ####################
