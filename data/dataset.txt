@@ -25,8 +25,10 @@ Customer ID,    Age,    Gender, Item Purchased, Category,   Purchase Amount (USD
 int,            int,    str,    str,            str,        int,                    str,        str,    str,    str,    float,          str(boolean),           str,            str,            str(boolean),       str(boolean),       int,                str,                        str
 1,              55,     Male,   Blouse,         Clothing,   53,                     Kentucky,   L,      Gray,   Winter, 3.1,            Yes,                    Credit Card,    Express,        Yes,                Yes,                14,                 Venmo,                      Fortnightly
 
-ecommerce_customer_data_large.csv
+ecommerce_customer_data_large.csv: https://www.kaggle.com/datasets/shriyashjagtap/e-commerce-customer-for-behavior-analysis
 0,              1,              2,                  3,              4,          5,                      6,              7,              8,          9
 Customer ID,    Purchase Date,  Product Category,   Product Price,  Quantity,   Total Purchase Amount,  Payment Method, Customer Age,   Returns,    Churn
 int,            str(date),      str,                int,            int,        int,                    str,            int,            int,        int
 44605,          2023/5/3 21:30, Home,               177,            1,          2427,                   PayPal,         31,             1,          0
+
+https://www.kaggle.com/datasets/zusmani/pakistans-largest-ecommerce-dataset/data
