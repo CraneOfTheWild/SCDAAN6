@@ -14,10 +14,35 @@ def read_csv(filename: str) -> tuple[list, list[list]]:
     Keyword arguments:
     |filename   -- the name of the csv file including the .csv
     """
-    pd_dataset = pd.read_csv(filename)
+    pd_dataset = pd.read_csv(filename, low_memory=False)
     headers = pd_dataset.columns.to_list()
     dataset = pd_dataset.to_numpy()
     return headers, dataset
+
+def plot_fourier(extended_grouped_data, group, seasons):
+    n_components = 5
+    fig, axes = plt.subplots(2, 3, figsize=(14, 10))
+    axes = axes.flatten()
+
+    print(group)
+    for i, item in enumerate(group):
+        ax = axes[i]
+        y_data = extended_grouped_data[item].values
+        reconstructed_data = fourier_fit(y_data, n_components)
+
+        ax.plot(seasons, y_data, marker='o', label=f'{item} (Actual)')
+        ax.plot(seasons, reconstructed_data, linestyle='--', label=f'{item} (FFT Reconstructed)')
+        ax.set_title(f'Item: {item}')
+        ax.set_xlabel('Season')
+        ax.set_ylabel('Number of Purchases')
+        plt.legend()
+        ax.tick_params(axis='x', rotation=45)
+
+    for j in range(len(group), len(axes)):
+        fig.delaxes(axes[j])
+
+    plt.tight_layout()
+    plt.show()
 
 def item_vs_season(dataset, column_id: list[int]):
     """
@@ -37,27 +62,17 @@ def item_vs_season(dataset, column_id: list[int]):
     grouped_data = df.groupby(['Season', 'Item'],observed=False).size().unstack(fill_value=0)
     duplicated_grouped_data = grouped_data.copy()
     duplicated_grouped_data.index = duplicated_grouped_data.index.map(lambda x: f"{x}_2")
-
     extended_grouped_data = pd.concat([grouped_data, duplicated_grouped_data])
+    extended_seasons = [season for season in extended_grouped_data.index]
+
 
     items = extended_grouped_data.columns.to_list()
-    chunks = [items[:6], items[6:12], items[12:19], items[19:]]
+    first_group, second_group, third_group, fourth_group = items[:6],items[6:12],items[12:18],items[18:24]
 
-
-    fig, axes = plt.subplots(2, 2, figsize=(14, 10))
-    axes = axes.flatten()
-
-    for i, chunk in enumerate(chunks):
-
-        extended_grouped_data[chunk].plot(ax=axes[i], kind='line', marker='o')
-        axes[i].set_title(f'Items {i * 6 + 1} to {i * 6 + len(chunk)}')
-        axes[i].set_xlabel('Season')
-        axes[i].set_ylabel('Number of Purchases')
-        axes[i].tick_params(axis='x', rotation=45)
-        axes[i].legend(title='Item', bbox_to_anchor=(1.05, 1), loc='upper left')
-
-    plt.tight_layout()
-    plt.show()
+    plot_fourier(extended_grouped_data, first_group, extended_seasons)
+    plot_fourier(extended_grouped_data, second_group, extended_seasons)
+    plot_fourier(extended_grouped_data, third_group, extended_seasons)
+    plot_fourier(extended_grouped_data, fourth_group, extended_seasons)
 
     plt.figure(figsize=(14, 8))
     sns.heatmap(grouped_data, annot=True, fmt="d", cmap='coolwarm', linewidths=0.5)
@@ -66,6 +81,12 @@ def item_vs_season(dataset, column_id: list[int]):
     plt.ylabel('Season')
     plt.xticks(rotation=45)
     plt.show()
+
+def fourier_fit(data, n_components):
+    fft_coeffs = np.fft.fft(data)  # Perform FFT
+    fft_coeffs[n_components:] = 0  # Retain only the first n_components frequencies
+    reconstructed = np.fft.ifft(fft_coeffs).real  # Perform inverse FFT
+    return reconstructed
 
 def sinusoid(x,a,b,phi,c):
     y = a*np.sin(b*x+phi)+c
@@ -94,6 +115,12 @@ def linear_regression(x,y):
 
     predictions = [slope * xi + intercept for xi in x]
     return slope, intercept, predictions
+
+def polynomial_regression(x, y, degree):
+    coeffs = np.polyfit(x, y, degree)
+    poly_func = np.poly1d(coeffs)
+    predictions = poly_func(x)
+    return poly_func, predictions
 
 def jacket_boots_regression(dataset, column_id: list[int]):
     '''
@@ -283,19 +310,121 @@ bounds=([0, 0, -np.pi, min(sweater_data)], [np.inf, np.inf, np.pi, max(sweater_d
     plt.tight_layout()
     plt.show()
 
+def item_vs_date(dataset, column_id: list[int]):
+    data_date = [entry[column_id[0]] for entry in dataset]
+    data_item = [entry[column_id[1]] for entry in dataset]
+
+    df = pd.DataFrame({'Date': data_date, 'Item': data_item})
+    df['Date'] = pd.to_datetime(df['Date'])
+    df['YearMonth'] = df['Date'].dt.to_period('M')
+
+    item_purchases_over_time = (df.groupby(['YearMonth', 'Item']).size().reset_index(name='Total_Purchases'))
+    pivot_data = item_purchases_over_time.pivot(index='YearMonth', columns='Item', values='Total_Purchases').fillna(0)
+
+
+    items = pivot_data.columns.to_list()
+    chunks = [items[:5], items[5:10], items[10:15], items[15:]]
+
+
+    x_labels = pivot_data.index.to_timestamp().strftime('%Y-%m')
+    numeric_time = range(len(x_labels))
+
+    fig, axes = plt.subplots(2, 2, figsize=(14, 10))
+    axes = axes.flatten()
+
+    for i, chunk in enumerate(chunks):
+        ax = axes[i]
+        for item in chunk:
+            ax.plot(numeric_time, pivot_data[item].values, marker='o', label=f'{item} (Actual)')
+            if pivot_data[item].sum() > 0:
+                poly_func, predictions = polynomial_regression(numeric_time, pivot_data[item].values, degree=2)
+                ax.plot(numeric_time, predictions, linestyle='--', label=f'{item} (Predicted)')
+
+        ax.set_title(f'Items {i * 5 + 1} to {i * 5 + len(chunk)}')
+        ax.set_xlabel('Month')
+        ax.set_ylabel('Number of Purchases')
+        ax.set_xticks(numeric_time)
+        ax.set_xticklabels(x_labels, rotation=45, ha='right')
+        ax.legend(title='Item', bbox_to_anchor=(1.05, 1), loc='upper left')
+
+    plt.tight_layout()
+    plt.show()
+
+def plot_pak(pivot_data, group, numeric_time, x_labels):
+    n_components = 5
+
+    fig, axes = plt.subplots(2, 3, figsize=(15, 10))
+    axes = axes.flatten()
+
+    for i, item in enumerate(group):
+        ax = axes[i]
+        y_data = pivot_data[item].values
+        reconstructed_data = fourier_fit(y_data, n_components)
+
+        ax.plot(numeric_time, y_data, marker='o', label=f'{item} (Actual)')
+        ax.plot(numeric_time, reconstructed_data, linestyle='--', label=f'{item} (FFT Reconstructed)')
+
+        ax.set_title(f'FFT for {item}')
+        ax.set_xlabel('Month')
+        ax.set_ylabel('Number of Purchases')
+        ax.set_yscale('log')
+        ax.set_xticks(numeric_time)
+        ax.set_xticklabels(x_labels, rotation=45, ha='right')
+        ax.legend()
+
+    for j in range(len(group), len(axes)):
+        fig.delaxes(axes[j])
+
+    plt.tight_layout()
+    plt.show()
+
+def pak_item_vs_date(dataset, column_id: list[int]):
+    data_date = [entry[column_id[0]] for entry in dataset]
+    data_item = [entry[column_id[1]] for entry in dataset]
+
+    df = pd.DataFrame({'Date': data_date, 'Item': data_item})
+    df['Date'] = pd.to_datetime(df['Date'])
+    df['YearMonth'] = df['Date'].dt.to_period('M')
+    df.replace(r'\\N', pd.NA, inplace=True, regex=True)
+    df = df.dropna()
+
+    item_purchases_over_time = (df.groupby(['YearMonth', 'Item']).size().reset_index(name='Total_Purchases'))
+    pivot_data = item_purchases_over_time.pivot(index='YearMonth', columns='Item', values='Total_Purchases').fillna(0)
+
+    items = pivot_data.columns.to_list()
+    x_labels = pivot_data.index.to_timestamp().strftime('%y-%m')
+    numeric_time = range(len(x_labels))
+
+    n_components = 5
+
+    first_group = items[:6]
+    second_group = items[6:12]
+    third_group = items[12:]
+
+    plot_pak(pivot_data, first_group, numeric_time, x_labels)
+
+    plot_pak(pivot_data, second_group, numeric_time, x_labels)
+
+    plot_pak(pivot_data, third_group, numeric_time, x_labels)
+
+
 
 def main():
+    # for the file shopping_trends.csv
     headers, dataset = read_csv("data/shopping_trends.csv")
-
     item_vs_season(dataset, [3,9])
     jacket_boots_regression(dataset, [3,9])
     hat_jeans_regression(dataset, [3,9])
     pants_shoes_regression(dataset, [3,9])
     skirt_sweater_regression(dataset, [3,9])
 
+    # for the file file.csv
+    headers2, dataset2 = read_csv("data/file.csv")
+    item_vs_date(dataset2, [6,9])
 
-
-
+    # for the file Pakistan_Ecommerce_Dataset.csv
+    headers3, dataset3 = read_csv("data/Pakistan_Ecommerce_Dataset.csv")
+    pak_item_vs_date(dataset3, [2,8])
 
 if __name__ == '__main__':
     main()
