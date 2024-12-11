@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Convert similarity matrix to data pointsa
+# Convert similarity matrix to data points
 def similarity_to_points(similarity_matrix):
     """
     Convert a similarity matrix to 2D points using a simple method:
@@ -74,12 +74,13 @@ def visualize_clustering(data, labels, centers, n_clusters):
     plt.grid(True)
     plt.show()
 
+# Mock input for now
 input_matrix = np.random.rand(16, 16)
 
 # Convert similarity matrix to 2D points
 points = similarity_to_points(input_matrix)
 
-# K-means clustering
+# K-means clustering (n needs to be adjusted)
 n_clusters = 2
 labels, centers = kmeans(points, n_clusters)
 
