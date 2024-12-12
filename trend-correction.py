@@ -9,6 +9,8 @@ import pandas as pd
 from collections import Counter
 import seaborn as sns
 from scipy.optimize import curve_fit
+from sklearn.decomposition import PCA
+from sklearn.cluster import KMeans
 
 FILENAME = "data/file.csv"
 DATE_COLUMN_NAME = "Transaction_Date"
@@ -25,31 +27,7 @@ def read_csv(filename: str) -> tuple[list, list[list]]:
     pd_dataset = pd.read_csv(filename, low_memory=False)
     headers = pd_dataset.columns.to_list()
     dataset = pd_dataset.to_numpy()
-    return headers, dataset
-
-def linear_regression(x,y):
-    """
-    Perform simple linear regression.
-
-    Arguments:
-    x -- List of independent variable values.
-    y -- List of dependent variable values.
-
-    Returns:
-    slope (m), intercept (b), and predicted values based on the regression line.
-    """
-    n = len(x)
-    mean_x = sum(x) / n
-    mean_y = sum(y) / n
-
-    numerator = sum((x[i] - mean_x) * (y[i] - mean_y) for i in range(n))
-    denominator = sum((x[i] - mean_x) ** 2 for i in range(n))
-
-    slope = numerator / denominator
-    intercept = mean_y - slope * mean_x
-
-    predictions = [slope * xi + intercept for xi in x]
-    return slope, intercept, predictions
+    return headers, dataset, pd_dataset
 
 def polynomial_regression(x, y, degree):
     coeffs = np.polyfit(x, y, degree)
@@ -125,7 +103,7 @@ def fourier_fit(nr_days=1):
     real_data_dict = {}
     for x in range(5):
         for y in range(4):
-            index = x + 4 * y
+            index = x * 4 + y
             # make a fourier fit
 
             real_data_dict[column_names[index]] = real_data.T[index]
@@ -138,7 +116,6 @@ def fourier_fit(nr_days=1):
     return real_data_dict
 
 def trend_correction(real_data, fitted_data, nr_days=1):
-
     corrected_data = [real_data[key] - fitted_data[key] for key, value in real_data.items()]
 
     df = pd.read_csv(FILENAME, parse_dates=[DATE_COLUMN_NAME])
@@ -168,16 +145,69 @@ def trend_correction(real_data, fitted_data, nr_days=1):
     big_fig.subplots_adjust(top=0.88, wspace=0.4, hspace=0.6)
     plt.legend()
     plt.show()
-    return fourier_values
+    return corrected_data
+
+def cosine_similarity(vec_1, vec_2):
+    dot_product = np.dot(vec_1, vec_2)
+
+    magnitude1 = np.linalg.norm(vec_1)
+    magnitude2 = np.linalg.norm(vec_2)
+    return dot_product / (magnitude1*magnitude2)
+
+def cosine_sim_matrix(corrected_data):
+    x, y = len(corrected_data), len(corrected_data)
+    cosine_similarity_matrix = np.zeros((x, y))
+
+    for i in range(len(corrected_data)):
+        for j in range(len(corrected_data)):
+            cosine_similarity_matrix[i, j] = cosine_similarity(corrected_data[i], corrected_data[j])
+
+    return cosine_similarity_matrix
+
+def kmeans_clustering(similarity_matrix, n_clusters):
+    pca = PCA(n_components=2)
+    points_2d = pca.fit_transform(similarity_matrix)
+
+    kmeans = KMeans(n_clusters=n_clusters, random_state=42)
+    labels = kmeans.fit_predict(points_2d)
+    centers = kmeans.cluster_centers_
+    return labels, centers, points_2d
+
+def visualize_clusters(points, labels, centers, n_clusters, data_labels):
+    plt.figure(figsize=(10, 8))
+    for i in range(n_clusters):
+        cluster_points = points[labels == i]
+        plt.scatter(cluster_points[:, 0], cluster_points[:, 1], label=f'Cluster {i+1}')
+    plt.scatter(centers[:, 0], centers[:, 1], s=200, c='black', marker='X', label='Centers')
+    for idx, (x, y) in enumerate(points):
+        plt.text(x, y, data_labels[idx], fontsize=9, alpha=0.8, ha='right', va='bottom')
+
+    plt.title('K-means Clustering')
+    plt.xlabel('Component 1')
+    plt.ylabel('Component 2')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
 
 def main():
+    n_clusters = 5
+    headers2, dataset2, pd_dataset = read_csv("data/file.csv")
+    data_labels = pd_dataset['Product_Category'].unique().tolist()
 
-    headers2, dataset2 = read_csv("data/file.csv")
     fitted_data = item_vs_date(dataset2, [6,9])
     real_data = fourier_fit(14)
-    trend_correction(real_data, fitted_data, 14)
 
+    corrected_data = trend_correction(real_data, fitted_data, 14)
+    cosine_similarity_matrix = cosine_sim_matrix(corrected_data)
 
+    plt.imshow(cosine_similarity_matrix)
+    plt.colorbar(label='Cosine Similarity')
+    plt.title('Cosine Similarity Matrix')
+    plt.show()
+
+    labels, centers, points_2d = kmeans_clustering(cosine_similarity_matrix, n_clusters)
+    visualize_clusters(points_2d, labels, centers, n_clusters, data_labels)
 
 if __name__ == '__main__':
     main()
