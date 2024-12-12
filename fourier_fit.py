@@ -49,15 +49,15 @@ def fourier_fit(nr_days=1):
 
     big_fig, figs = plt.subplots(4, 4)
     # save the fourier analysis values
-    fourier_values = []
+    true_fourier_values = []
     for x in range(4):
         for y in range(4):
             index = x + 4 * y
             # make a fourier fit
             fft_analysis = np.fft.fft(data.T[index])
+            true_fourier_values.append(fft_analysis)
             fft_analysis_truncated = np.zeros_like(fft_analysis)
             fft_analysis_truncated[:FOURIER_COMPONENTS] = fft_analysis[:FOURIER_COMPONENTS]
-            fourier_values.append(fft_analysis[:FOURIER_COMPONENTS])
             reconstructed_data = np.fft.ifft(fft_analysis_truncated).real
             figs[x, y].plot(df_rolling_avg.index, data.T[index],
                             label="Original Rolling Average")
@@ -73,7 +73,7 @@ def fourier_fit(nr_days=1):
     big_fig.suptitle(f"fourier analysis using {FOURIER_COMPONENTS} components on the rolling average of the {
         nr_days} days surrounding a date")
     plt.show()
-    return fourier_values
+    return np.array(true_fourier_values)
 
 
 def months_fit():
@@ -123,4 +123,31 @@ def months_fit():
     plt.show()
 
 
-fourier_fit(14)
+def complex_similarity(vec_0, vec_1):
+    dot_product = np.dot(vec_0, vec_1)
+    magnitude_0 = np.linalg.norm(vec_0)
+    magnitude_1 = np.linalg.norm(vec_1)
+    return np.real(dot_product) / (magnitude_0 * magnitude_1)
+
+
+def similarity_matrix(array):
+    nr_to_compare = len(array)
+    matrix = np.zeros((nr_to_compare, nr_to_compare))
+    for index_0 in range(nr_to_compare):
+        for index_1 in range(index_0, nr_to_compare):
+            if index_0 == index_1:
+                similarity = 1.0
+                matrix[index_0, index_1] = similarity
+            else:
+                similarity = complex_similarity(array[index_0], array[index_1])
+                matrix[index_0, index_1] = similarity
+                matrix[index_1, index_0] = similarity
+    return matrix
+
+
+fourier_vectors = fourier_fit(14)
+similarity = similarity_matrix(fourier_vectors)
+
+plt.imshow(similarity, cmap='gray')
+plt.title("Cosine Similarity Matrix")
+plt.show()
