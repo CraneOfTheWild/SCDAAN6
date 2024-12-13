@@ -116,7 +116,12 @@ def fourier_fit(nr_days=1):
     return real_data_dict
 
 def trend_correction(real_data, fitted_data, nr_days=1):
-    corrected_data = [real_data[key] - fitted_data[key] for key, value in real_data.items()]
+    corrected_data = {}
+    for key ,value in real_data.items():
+        corrected_data[key] = real_data[key] - fitted_data[key]
+
+    keys = list(corrected_data.keys())
+    data_values = list(corrected_data.values())
 
     df = pd.read_csv(FILENAME, parse_dates=[DATE_COLUMN_NAME])
     # aggregate by date
@@ -133,13 +138,15 @@ def trend_correction(real_data, fitted_data, nr_days=1):
     big_fig, figs = plt.subplots(5, 4, figsize=(20,16))
 
     fourier_values = []
+    index = -1
     for x in range(5):
         for y in range(4):
-            index = x + 4 * y
-            figs[x, y].plot(df_rolling_avg.index, corrected_data[index],
+            index += 1
+            figs[x, y].plot(df_rolling_avg.index, data_values[index],
                             label="Trend Corrected Data")
             figs[x, y].set_ylabel("Sales Number Corrected")
-            figs[x, y].set_title(column_names[index])
+            figs[x, y].set_title(keys[index])
+            figs[x, y].tick_params(axis='x', rotation=45)
     big_fig.align_labels()
     plt.tight_layout()
     big_fig.subplots_adjust(top=0.88, wspace=0.4, hspace=0.6)
@@ -157,12 +164,15 @@ def cosine_similarity(vec_1, vec_2):
 def cosine_sim_matrix(corrected_data):
     x, y = len(corrected_data), len(corrected_data)
     cosine_similarity_matrix = np.zeros((x, y))
+    keys = list(corrected_data.keys())
+    data_values = list(corrected_data.values())
 
     for i in range(len(corrected_data)):
         for j in range(len(corrected_data)):
-            cosine_similarity_matrix[i, j] = cosine_similarity(corrected_data[i], corrected_data[j])
+            cosine_similarity_matrix[i, j] = cosine_similarity(data_values[i], data_values[j])
 
-    return cosine_similarity_matrix
+
+    return cosine_similarity_matrix, keys
 
 def kmeans_clustering(similarity_matrix, n_clusters):
     pca = PCA(n_components=2)
@@ -199,9 +209,11 @@ def main():
     real_data = fourier_fit(14)
 
     corrected_data = trend_correction(real_data, fitted_data, 14)
-    cosine_similarity_matrix = cosine_sim_matrix(corrected_data)
+    cosine_similarity_matrix, keys = cosine_sim_matrix(corrected_data)
 
     plt.imshow(cosine_similarity_matrix)
+    plt.xticks(range(len(keys)), keys, rotation=90)
+    plt.yticks(range(len(keys)), keys)
     plt.colorbar(label='Cosine Similarity')
     plt.title('Cosine Similarity Matrix')
     plt.show()
