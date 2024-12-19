@@ -13,7 +13,7 @@ the following libraries are needed to run our code (as defined at the top of eac
 - scipy
 - itertools
 
-The data we used has been placed in the daata folder allongside a link to the source and a discription of the columns.
+The data we used has been placed in the data folder allongside a link to the source and a discription of the columns.
 
 **How To Run**
 
@@ -27,7 +27,15 @@ TODO
 
 **Hypothesis**
 
-TODO
+Ha (goodness-of-fit): Test if the residuals from the polynomial fit and Fourier fit follow a normal distribution.
+
+H0_a1: The residuals from the polynomial fit follow a standard normal distribution.
+H0_a2: The residuals from the Fourier fit it follow a standard normal distribution.
+
+Hb (compare between models)
+
+H0_b: There is no significant difference in the clustering performance of the polynomial fit and Fourier Fit.
+
 
 **methods**
 
@@ -37,4 +45,6 @@ The suggested order is: 0_exploration.ipynb, 1_polynominal_fit.ipynb, 2_fourier_
 
 **Conclusion**
 
-TODO
+In the file 3_conclusion.ipynb we see that the test suggest that we do not have
+enough evidence to accept our hypotheses. We see that both the polynominal fit
+and the fourier fit do not agree. This means that one of both method(s) are wrong.
