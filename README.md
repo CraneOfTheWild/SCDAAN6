@@ -1,59 +1,38 @@
-# ScDaAn group 6
+# Clustering Sales Data
 
-We aim to compare the population size of fishes to environmental factors caused by human intervention and direct human interaction (fishing). To do this we look at datasets from the UN food and agriculture organization and environmental datasets.
+**requirements**
 
-Research questions and hypotheses
-R1 Which factors impact the fish population size?
-For each factor independently:
-	H0: this factor has no correlation with fish population size
+our code is written in python3 and for ease of viewing has been placed in jupyter notebooks.
 
-R2 Which fish species are more impacted by these factors?
-For each correlated factor pair:
-	H0: the two factors are equally important to population size
+the following libraries are needed to run our code (as defined at the top of each notebook):
 
-R3 Can we classify fish species into low, medium and high sensitivity groups?
+- numpy
+- matplotlib
+- pandas
+- sklearn (not used for clustering)
+- scipy
+- itertools
 
-R? More questions will follow from the specifics of our dataset (such as location data) and further understanding of existing models. 
+**How To Run**
 
+Our main presentation of our project occurs in the jupyter notebooks. These should be run using python3 (we used python3.12). The notebooks are numbered roughly chronologically with a number before their name.
 
+We have also left all our old python3 files in the old_files folder (including old versions of our project plan). These are included for completenes and can still be run. They dont however contain a structured narative. These files should be run from the root folder (ie the one this README is in) using python3 old_files/filename.py
 
-Updated
-We aim to analyze the possible factors determining consumer average spending amount, such as gender, geographical location, product type, payment method, discount or promotion, etc. We gathered shopping trend datasets to make further prediction.
+**Synopsis**
 
-Research Question and Hypotheses
-R1 Which factors influence the consumer average spending amount?
-	For each factor independently:
- 	H0: this factor has a significant effect on consumer average spending amount.
+TODO
 
-Potential factors:
-a. Demographics: age, gender (categorical), income level (continuous)
-b. Geographic: country/regions (categorical)
-c. Individual shopping behavior: product type (categorical), payment method (categorical)
-d. External: Discount (binary: Yes=1, No=0), holiday season (binary: Yes=1, No=0)
+**Hypothesis**
 
+TODO
 
-Updated
-We aim to analyze the possible factors determining consumer average spending amount, such as gender, geographical location, product type, payment method, discount or promotion, etc. We gathered shopping trend datasets to make further prediction.
+**methods**
 
-Research Question and Hypotheses
-R1 Which factors influence the consumer average spending amount?
-	For each factor independently:
- 	H0: this factor has a significant effect on consumer average spending amount.
+These are explained in the jupyter notebooks.
 
-Potential factors:
-a. Demographics: age, gender (categorical), income level (continuous)
-b. Geographic: country/regions (categorical)
-c. Individual shopping behavior: product type (categorical), payment method (categorical)
-d. External: Discount (binary: Yes=1, No=0), holiday season (binary: Yes=1, No=0)
+The suggested order is: 0_exploration.ipynb, 1_polynominal_fit.ipynb, 2_fourier_fit.ipynb, 3_conclusion.ipynb
 
-shopping_trends.csv:
-https://www.kaggle.com/datasets/bhadramohit/customer-shopping-latest-trends-dataset
+**Conclusion**
 
-shopping_trends_updated.csv:
-https://www.kaggle.com/datasets/iamsouravbanerjee/customer-shopping-trends-dataset
-
-file.csv:
-https://www.kaggle.com/datasets/jacksondivakarr/online-shopping-dataset
-
-E-commerce Customer Data For Behavior Analysis：
-https://www.kaggle.com/datasets/shriyashjagtap/e-commerce-customer-for-behavior-analysis
+TODO
