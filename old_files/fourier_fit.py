@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 
-FILENAME = "../data/file.csv"
+FILENAME = "data/file.csv"
 DATE_COLUMN_NAME = "Transaction_Date"
 CATEGORY_COLUMN_NAME = "Product_Category"
 FOURIER_COMPONENTS = 30
