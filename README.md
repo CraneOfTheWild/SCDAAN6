@@ -13,6 +13,8 @@ the following libraries are needed to run our code (as defined at the top of eac
 - scipy
 - itertools
 
+The data we used has been placed in the daata folder allongside a link to the source and a discription of the columns.
+
 **How To Run**
 
 Our main presentation of our project occurs in the jupyter notebooks. These should be run using python3 (we used python3.12). The notebooks are numbered roughly chronologically with a number before their name.
