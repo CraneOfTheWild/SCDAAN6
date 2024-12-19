@@ -23,7 +23,12 @@ We have also left all our old python3 files in the old_files folder (including o
 
 **Synopsis**
 
-TODO
+This project explores computational methods to address real-world shopping analysis challenges.  
+
+Key objectives include:  
+- Using polynomial and Fourier fitting to identify trends in noisy data;
+- Applying k-means clustering to group shopping patterns;
+- Evaluating the quality of both fitting and clustering outcomes. 
 
 **Hypothesis**
 
